@@ -30,19 +30,18 @@ public class MyConfig {
         return daoAuthenticationProvider;
     }
 
+    @SuppressWarnings("deprecation")
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .requestMatchers("/admin/**").hasRole("ADMIN")
-            .requestMatchers("/user/**").hasRole("USER")
-            .requestMatchers("/**").permitAll()
-            .and()
-            .formLogin()
-            .loginPage("/signin")
-            .loginProcessingUrl("/dologin")
-            .defaultSuccessUrl("/user/index")
-            .and()
-            .csrf().disable();
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests(requests -> requests
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/user/**").hasRole("USER")
+                .requestMatchers("/**").permitAll())
+                .formLogin(login -> login
+                        .loginPage("/signin")
+                        .loginProcessingUrl("/dologin")
+                        .defaultSuccessUrl("/user/index"))
+                .csrf(csrf -> csrf.disable());
 		return http.build();
         
     }
